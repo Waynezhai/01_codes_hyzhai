@@ -5,7 +5,7 @@
 # Author: Wayne_zhy
 # Mail: zhyzhaihuiyan@163.com
 # Created Time: 2019-07-11 16:21:49
-# Last Modified: 2019-07-23 14:26:08
+# Last Modified: 2019-07-23 15:17:25
 ################################################################# 
 
 """
@@ -30,7 +30,7 @@ def usage():
     sys.exit()
 
 def version():
-    print "Version: 1.0.2"
+    print "Version: 1.0.3"
     sys.exit()
 
 def str2hex(s):
@@ -46,6 +46,18 @@ def str2hex(s):
             odata += tmp - ord('A') + 10
     return odata
     
+def switch(input_char):
+    i = 0
+    output = ""
+    while i < len(input_char):
+        fg = input_char[i:i+2]
+        fg = "0x" + fg
+        fg = str2hex(fg)
+        fg = chr(fg)
+        output = output + fg
+        i = i + 2
+    return output
+
 
 if __name__ == '__main__':
     try:
@@ -62,18 +74,10 @@ if __name__ == '__main__':
     except getopt.GetoptError:
         usage()
 
-    i = 0
-    output = ""
-    while i < len(input_char):
-        fg = input_char[i:i+2]
-        fg = "0x" + fg
-        fg = str2hex(fg)
-        fg = chr(fg)
-        output = output + fg
-        i = i + 2
+    output_str = switch(input_char)
+    print output_str
         
-    print output
-
+        
 
 
 
