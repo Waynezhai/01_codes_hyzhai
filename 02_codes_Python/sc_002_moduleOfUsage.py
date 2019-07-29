@@ -5,7 +5,7 @@
 # Author: Wayne_zhy
 # Mail: zhyzhaihuiyan@163.com
 # Created Time: 2019-07-11 16:21:49
-# Last Modified: 2019-07-12 17:27:04
+# Last Modified: 2019-07-29 22:22:27
 ################################################################# 
 
 """
@@ -29,18 +29,12 @@
 import getopt
 import sys
 
-
-channel_list = ["stm-64", "stm-16", "stm-4", "stm-1", "tug3", "tu1x", "ts"]
-type_list = ["gfp_single", "gfp_vcon", "atm", "hdlc", "chdlc", "ppp", "ss7", "pcm"]
-
-
 def usage():
     print 'Usage:\n' \
             ' -h, --help: print help message. \n' \
             ' -v, --version: print script version.\n' \
             ' -f, --filename: the name of file which will be dealed.\n' \
-            ' -c, --channel: the rate of channel such as: stm-64, stm-16, stm-4, stm-1, tug3, tu1x, ts.\n' \
-            ' -t, --type: the type of frame such as: gfp_single, gfp_vcon, atm, hdlc, chdlc, ss7, pcm.\n' \
+            ' -t, --type: the type of xxx such as: xxx, yyy, zzz.\n' \
             ''
     sys.exit()
 
@@ -48,9 +42,15 @@ def version():
     print "Version: 1.0.1"
     sys.exit()
 
+def judge_filename(filename):
+    pass
+
+def judge_type(typex):
+    pass
+
 if __name__ == '__main__':
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hvf:c:t:", ["help", "version", "filename=", "channel=", "type="])
+        opts, args = getopt.getopt(sys.argv[1:], "hvf:t:", ["help", "version", "filename=", "type="])
         if len(opts) == 0:
             usage()
         for name, value in opts:
@@ -59,17 +59,11 @@ if __name__ == '__main__':
             elif name in ('-v', '--version'):
                 version()
             elif name in ('-f', '--filename'):
-                print "The filename is %s ." % value
-            elif name in ('-c', '--channel'):
-                if value in channel_list:
-                    print "The channel is %s ." % value
-                else:
-                    usage()
+                filename = value
+                judge_filename(filename)
             elif name in ('-t', '--type'):
-                if value in type_list:
-                    print "The type is %s ." % value
-                else:
-                    usage()
+                typex = name
+                judge_type(typex)
     except getopt.GetoptError:
         usage()
 

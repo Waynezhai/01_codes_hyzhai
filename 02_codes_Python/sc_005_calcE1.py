@@ -5,7 +5,7 @@
 # Author: Wayne_zhy
 # Mail: zhyzhaihuiyan@163.com
 # Created Time: 2019-7-29 18:42:12 
-# Last Modified: 2019-07-29 21:55:11
+# Last Modified: 2019-07-29 22:23:56
 ################################################################# 
 
 """
@@ -36,19 +36,26 @@ def version():
     print "Version: 1.0.1"
     sys.exit()
     
+def judge_channel(channel_a):
+    j0 = len(channel_a) != 3
+    j1 = not channel_a.isdigit()
+    if j0 or j1:
+        print "请检查 -c 参数是否准确输入。"
+        sys.exit()
+    a = int(channel_a[0])
+    b = int(channel_a[1])
+    c = int(channel_a[2])
+    ja = a not in range(1, 4)
+    jb = b not in range(1, 8)
+    jc = c not in range(1, 4)
+    if ja or jb or jc:
+        print "请检查 -c 参数是否准确输入。"
+        sys.exit()
+
 def calc(channel_a, algorithm_a):
     a = int(channel_a[0])
     b = int(channel_a[1])
     c = int(channel_a[2])
-    
-    ja = a not in range(1, 4)
-    jb = b not in range(1, 8)
-    jc = c not in range(1, 4)
-    jd = len(channel_a) > 3
-    if ja or jb or jc or jd:
-        print "请检查 -c 参数是否准确输入。"
-        sys.exit()
-
     if algorithm_a == "hw":
         alg = '华为'
         out = (c-1)*7*3 + (b-1)*3 + a
@@ -67,7 +74,7 @@ def calc(channel_a, algorithm_a):
 
 if __name__ == '__main__':
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hvf:a:c:", ["help", "version", "filename=", "algorithm", "channel=",])
+        opts, args = getopt.getopt(sys.argv[1:], "hva:c:", ["help", "version", "algorithm", "channel=",])
         if len(opts) == 0:
             usage()
         for name, value in opts:
@@ -75,12 +82,15 @@ if __name__ == '__main__':
                 usage()
             elif name in ('-v', '--version'):
                 version()
-            elif name in ('-f', '--filename'):
-                print "The filename is %s ." % value
             elif name in ('-a', '--algorithm'):
                 algorithm_a = value
+                if algorithm_a not in ["hw", "lx", "itu"]:
+                    print "请准确输入 -a 参数！"
+                    sys.exit()
             elif name in ('-c', '--channel'):
                 channel_a = value
+                judge_channel(channel_a) 
+
     except getopt.GetoptError:
         usage()
 
@@ -90,8 +100,4 @@ if __name__ == '__main__':
     else:
         calc(channel_a, algorithm_a)
     
-
-
-
-
 
