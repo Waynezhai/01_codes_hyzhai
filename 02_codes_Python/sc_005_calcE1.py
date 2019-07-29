@@ -5,7 +5,7 @@
 # Author: Wayne_zhy
 # Mail: zhyzhaihuiyan@163.com
 # Created Time: 2019-7-29 18:42:12 
-# Last Modified: 2019-07-29 19:46:22
+# Last Modified: 2019-07-29 21:55:11
 ################################################################# 
 
 """
@@ -41,7 +41,11 @@ def calc(channel_a, algorithm_a):
     b = int(channel_a[1])
     c = int(channel_a[2])
     
-    if a not in range(1, 4) or b not in range(1, 8) or c not in range(1, 4):
+    ja = a not in range(1, 4)
+    jb = b not in range(1, 8)
+    jc = c not in range(1, 4)
+    jd = len(channel_a) > 3
+    if ja or jb or jc or jd:
         print "请检查 -c 参数是否准确输入。"
         sys.exit()
 
