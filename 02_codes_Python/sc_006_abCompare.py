@@ -5,7 +5,7 @@
 # Author: Wayne_zhy
 # Mail: zhyzhaihuiyan@163.com
 # Created Time: 2019-07-11 16:21:49
-# Last Modified: 2019-08-16 14:45:19
+# Last Modified: 2019-09-03 21:24:24
 ################################################################# 
 
 """
@@ -13,9 +13,7 @@
 功能：
     比较ab.txt文件中的字节大小，大于某个范围的标记出来
 思路：
-    ls -lR --full-time |cut -d " " -f 5,9 |grep -E "A|B" >ab.txt
-    cat ab.txt |grep -e "-A$" >a.txt
-    cat ab.txt |grep -e "-B$" >b.txt
+    ls -lR --full-time |awk {'print $5,$9'} |grep -E '96*-A$|94*-B$' > ab_2930_20190829.txt
 说明：
 
 """
@@ -30,6 +28,7 @@ def usage():
             ' -v, --version: print script version.\n' \
             ' -f, --filename: the file of ab size.\n' \
             ' -d, --dvalue: the D-value of file a and file b, the Unit is bytes.\n' \
+            " do this at first: ls -lR --full-time |awk {'print $5,$9'} |grep -E '*-A$|*-B$' > ab_2930_20190829.txt\n" \
             ''
     sys.exit()
 
@@ -51,8 +50,13 @@ def dict_x(filename, x):
     os.system("""cat %s |grep -e "-%s$" > xxxx.txt""" % (filename, x))
     fx = open("xxxx.txt", "r")
     dict_x = {}
+    content_list = []
     for line in fx:
-        dict_x[line.split()[1][:-9]] = line.split()[0]
+        content_list.append(line.split()[0])
+        content_list.append(line.split()[1])
+        key_fix = "-".join(line.split()[1].split("-")[:-2])
+        dict_x[key_fix] = content_list 
+        content_list = []
     fx.close
     os.system("""rm -rf xxxx.txt""")
     return dict_x
@@ -83,10 +87,10 @@ list_key = []
 list_onlyInA = []
 list_onlyInB = []
 for key in dict_a.keys():
-    if key in dict_b.keys():
-        list_key.append(key)
-    else:
+    if key not in dict_b.keys():
         list_onlyInA.append(key)
+    else:
+        list_key.append(key)
 for key in dict_b.keys():
     if key not in dict_a.keys():
         list_onlyInB.append(key)
@@ -94,23 +98,26 @@ for key in dict_b.keys():
 print "*" * 80
 print "以下文件仅在 A 中出现："
 for key in list_onlyInA:
-    print key
+    print dict_a[key][1]
 
 print "*" * 80
 print "以下文件仅在 B 中出现："
 for key in list_onlyInB:
-    print key
+    print dict_b[key][1]
 
 print "*" * 80
 print "以下文件大小差值大于 %s bytes:" % dvalue
 flag_ok = 0
 flag_no = 0
 for key in list_key:
-    if int(dict_a[key]) - int(dict_b[key]) <= int(dvalue):
+    aaaa = dict_a[key]
+    bbbb = dict_b[key]
+    aabb = abs(int(aaaa[0]) - int(bbbb[0]))
+    if aabb <= int(dvalue):
         flag_ok += 1
     else:
         flag_no += 1
-        print "%s" % key
+        print "%s---差值为：%d bytes---与较大值的比为：%f%%" % (aaaa[1][:-2], aabb, aabb*100.0/max(int(aaaa[0]),int(bbbb[0])))
 
 print "*" * 80
 print "文件差值小于等于 %s bytes 的文件对数为 %d ." % (dvalue, flag_ok)
